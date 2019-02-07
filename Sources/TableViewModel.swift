@@ -43,9 +43,6 @@ public protocol TableCellViewModel: ReusableCellViewModelProtocol, DiffableViewM
     /// Asks the cell to commit the insertion/deletion.
     var commitEditingStyle: CommitEditingStyleClosure? { get }
 
-    /// Invoked when a cell has been selected.
-    var didSelect: DidSelectClosure? { get }
-
     /// Invoked when an accessory button is tapped.
     var accessoryButtonTapped: AccessoryButtonTappedClosure? { get }
 
@@ -82,9 +79,6 @@ public extension TableCellViewModel {
 
     /// Default implementation, returns `nil`.
     var commitEditingStyle: CommitEditingStyleClosure? { return nil }
-
-    /// Default implementation, returns `nil`.
-    var didSelect: DidSelectClosure? { return nil }
 
     /// Default implementation, returns `nil`.
     var accessoryButtonTapped: AccessoryButtonTappedClosure? { return nil }

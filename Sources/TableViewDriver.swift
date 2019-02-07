@@ -72,6 +72,9 @@ open class TableViewDriver: NSObject {
 
     private let _automaticDiffingEnabled: Bool
 
+    public var didSelect: (TableCellViewModel) -> Void
+    public var didDeselect: (TableCellViewModel) -> Void
+
     /// Initializes a data source that drives a `UITableView` based on a `TableViewModel`.
     ///
     /// - Parameters:
@@ -86,11 +89,16 @@ open class TableViewDriver: NSObject {
         tableView: UITableView,
         tableViewModel: TableViewModel? = nil,
         shouldDeselectUponSelection: Bool = true,
-        automaticDiffingEnabled: Bool = true) {
+        automaticDiffingEnabled: Bool = true,
+        didSelect: @escaping (TableCellViewModel) -> Void = { _ in },
+        didDeselect: @escaping (TableCellViewModel) -> Void = { _ in }
+    ) {
         self._tableViewModel = tableViewModel
         self.tableView = tableView
         self._automaticDiffingEnabled = automaticDiffingEnabled
         self._shouldDeselectUponSelection = shouldDeselectUponSelection
+        self.didSelect = didSelect
+        self.didDeselect = didDeselect
         super.init()
         tableView.dataSource = self
         tableView.delegate = self
@@ -317,7 +325,12 @@ extension TableViewDriver: UITableViewDelegate {
         if self._shouldDeselectUponSelection {
             tableView.deselectRow(at: indexPath, animated: true)
         }
-        self.tableViewModel?[ifExists: indexPath]?.didSelect?()
+        self.tableViewModel?[ifExists: indexPath].map(didSelect)
+    }
+
+    /// :nodoc:
+    public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        self.tableViewModel?[ifExists: indexPath].map(didDeselect)
     }
 
     /// :nodoc:

@@ -56,6 +56,9 @@ public class CollectionViewDriver: NSObject {
 
     private let _automaticDiffingEnabled: Bool
 
+    public var didSelect: (CollectionCellViewModel) -> Void
+    public var didDeselect: (CollectionCellViewModel) -> Void
+
     // MARK: Initialization
 
     /// Initializes a data source that drives a `UICollectionView` based on a `CollectionViewModel`.
@@ -72,11 +75,16 @@ public class CollectionViewDriver: NSObject {
         collectionView: UICollectionView,
         collectionViewModel: CollectionViewModel? = nil,
         shouldDeselectUponSelection: Bool = true,
-        automaticDiffingEnabled: Bool = true) {
+        automaticDiffingEnabled: Bool = true,
+        didSelect: @escaping (CollectionCellViewModel) -> Void = { _ in },
+        didDeselect: @escaping (CollectionCellViewModel) -> Void = { _ in }
+    ) {
         self._collectionViewModel = collectionViewModel
         self.collectionView = collectionView
         self._automaticDiffingEnabled = automaticDiffingEnabled
         self._shouldDeselectUponSelection = shouldDeselectUponSelection
+        self.didSelect = didSelect
+        self.didDeselect = didDeselect
         super.init()
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -233,12 +241,12 @@ extension CollectionViewDriver: UICollectionViewDelegate {
         if self._shouldDeselectUponSelection {
             collectionView.deselectItem(at: indexPath, animated: true)
         }
-        self.collectionViewModel?[ifExists: indexPath]?.didSelect?()
+        self.collectionViewModel?[ifExists: indexPath].map(didSelect)
     }
 
     /// :nodoc:
     public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        self.collectionViewModel?[ifExists: indexPath]?.didDeselect?()
+        self.collectionViewModel?[ifExists: indexPath].map(didDeselect)
     }
 
     /// :nodoc:
@@ -248,6 +256,10 @@ extension CollectionViewDriver: UICollectionViewDelegate {
 }
 
 extension CollectionViewDriver: UICollectionViewDelegateFlowLayout {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return self.collectionViewModel?[ifExists: indexPath]?.size ?? .zero
+    }
+
     /// :nodoc:
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return self._sizeForSupplementaryViewOfKind(.header, inSection: section, collectionViewLayout: collectionViewLayout)
