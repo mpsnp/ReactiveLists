@@ -22,9 +22,6 @@ public protocol TableCellViewModel: ReusableCellViewModelProtocol, DiffableViewM
     /// `TableViewDriver` will automatically apply an `accessibilityIdentifier` to the cell based on this format.
     var accessibilityFormat: CellAccessibilityFormat { get }
 
-    /// The height of this cell.
-    var rowHeight: CGFloat? { get }
-
     /// The editing style for this cell.
     var editingStyle: UITableViewCell.EditingStyle { get }
 
@@ -50,18 +47,13 @@ public protocol TableCellViewModel: ReusableCellViewModelProtocol, DiffableViewM
     /// in the cell model and return the updated cell.
     /// - Parameter cell: the cell which contents need to be updated.
     func applyViewModelToCell(_ cell: UITableViewCell)
+
+    /// The height of this cell.
+    func height(for tableSize: CGSize) -> CGFloat?
 }
 
 /// Default implementations for `TableCellViewModel`.
 public extension TableCellViewModel {
-
-    /// Default implementation, returns `nil`.
-    /// - Note: If `nil`, the `TableViewDriver` will fallback to `TableViewModel.defaultRowHeight`.
-    /// - See also: TableViewModel
-    var rowHeight: CGFloat? {
-        return nil
-    }
-
     /// Default implementation, returns `.none`.
     var editingStyle: UITableViewCell.EditingStyle { return .none }
 
@@ -82,6 +74,13 @@ public extension TableCellViewModel {
 
     /// Default implementation, returns `nil`.
     var accessoryButtonTapped: AccessoryButtonTappedClosure? { return nil }
+
+    /// Default implementation, returns `nil`.
+    /// - Note: If `nil`, the `TableViewDriver` will fallback to `TableViewModel.defaultRowHeight`.
+    /// - See also: TableViewModel
+    func height(for tableSize: CGSize) -> CGFloat? {
+        return nil
+    }
 }
 
 /// Protocol that needs to be implemented by table view cell view models

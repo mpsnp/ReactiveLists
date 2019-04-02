@@ -56,6 +56,11 @@ final class CollectionToolCellModel: CollectionCellViewModel, DiffableViewModel 
         collectionToolCell.closeButton.addTarget(self, action: #selector(deleteTapped), for: .touchUpInside)
     }
 
+    func size(for collectionSize: CGSize) -> CGSize {
+        let width = collectionSize.width * 0.5 - 5
+        return CGSize(width: width, height: width / 1.5)
+    }
+
     var diffingKey: String {
         return self.tool.uuid.uuidString
     }

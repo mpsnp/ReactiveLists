@@ -257,7 +257,7 @@ extension CollectionViewDriver: UICollectionViewDelegate {
 
 extension CollectionViewDriver: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return self.collectionViewModel?[ifExists: indexPath]?.size ?? .zero
+        return self.collectionViewModel?[ifExists: indexPath]?.size(for: collectionView.frame.size) ?? .zero
     }
 
     /// :nodoc:

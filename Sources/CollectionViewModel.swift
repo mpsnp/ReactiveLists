@@ -25,12 +25,13 @@ public protocol CollectionCellViewModel: ReusableCellViewModelProtocol, Diffable
     /// Whether or not this cell should be highlighted.
     var shouldHighlight: Bool { get }
 
-    var size: CGSize { get }
-
     /// Asks the cell model to update the `UICollectionViewCell` with the content
     /// in the cell model and return the updated cell.
     /// - Parameter cell: the cell which's content need to be updated.
     func applyViewModelToCell(_ cell: UICollectionViewCell)
+
+    /// The size of this cell.
+    func size(for collectionSize: CGSize) -> CGSize
 }
 
 /// Default implementations for `CollectionCellViewModel`.
